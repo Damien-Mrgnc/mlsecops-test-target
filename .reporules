@@ -1,0 +1,10 @@
+# Règles du repo test-target
+
+## Sécurité (CRITIQUE)
+- INTERDICTION de hardcoder des secrets, clés API ou mots de passe.
+- INTERDICTION de désactiver SSL (verify=False).
+- Les requêtes SQL DOIVENT utiliser des paramètres préparés.
+
+## Qualité (AVERTISSEMENT)
+- Les noms de variables DOIVENT être descriptifs.
+- Les exceptions DOIVENT être catchées spécifiquement.

@@ -1,0 +1,39 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ai-review:
+    name: MLSecOps AI Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du repo cible (ce repo)
+        uses: actions/checkout@v4
+
+      - name: Checkout de l'agent de review
+        uses: actions/checkout@v4
+        with:
+          repository: Damien-Mrgnc/mlsecops-ai-reviewer
+          path: _reviewer
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r _reviewer/reviewer/requirements.txt
+
+      - name: Lancer l'agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: python _reviewer/reviewer/agent.py
